@@ -1,0 +1,9 @@
+// Exploratory Data Anayalsys To Understand the Data
+// DashBoard Wih Power BI + Extract The Insights [Repport]
+
+
+// Implement Simple Neural Network + Regression Linear Multiple
+
+
+// Deploy The Model
+
