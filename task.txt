@@ -1,9 +1,26 @@
 // Exploratory Data Anayalsys To Understand the Data
-// DashBoard Wih Power BI + Extract The Insights [Repport]
+/*
+    - number of features, data types and data distribution
+    - relationship between varaibles
+    - hightlight features for building Model
+*/
+// Visualtion With Power BI Or Tableau
+
+
+// Data Preperation
+/*
+    - Normalisation/Standrasiation
+*/
 
 
 // Implement Simple Neural Network + Regression Linear Multiple
-
+/*
+    - Model Architect
+    - Training
+    - Evaluation
+    - Save Model
+*/
 
 // Deploy The Model
+
 
