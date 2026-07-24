@@ -1,26 +1,6 @@
-// Exploratory Data Anayalsys To Understand the Data
-/*
-    - number of features, data types and data distribution
-    - relationship between varaibles
-    - hightlight features for building Model
-*/
-// Feature Selection vs Feature Enegenring
-// Visualtion With Power BI Or Tableau
-
-// Data Preperation
-/*
-    - Normalisation/Standrasiation
-*/
-
-
-// Implement Simple Neural Network + Regression Linear Multiple
-/*
-    - Model Architect
-    - Training
-    - Evaluation
-    - Save Model
-*/
-
+// Revise all things in paper
+// Build Backend
+// Build An ML Dashbaord
 // Deploy The Model
 
 
