@@ -1,0 +1,12 @@
+POST http://127.0.0.1:8000/get-prediction HTTP/1.1
+Host: 127.0.0.1:8000
+Content-Type: application/json
+
+{
+  "ghi": 650.5,
+  "humidity": 45.2,
+  "temp": 28.7,
+  "sunlightTime": 10.5,
+  "dayLength": 12.8,
+  "SunlightTime_daylength": 0.8203
+}
