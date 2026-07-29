@@ -3,6 +3,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import torch.nn as nn
 import torch
+import numpy as np
+import joblib
+import pandas as pd
+
 
 
 # create app
@@ -12,6 +16,7 @@ app = FastAPI()
 # create baseModel
 class Item(BaseModel):
     ghi: float
+    is_sun: int
     humidity: float
     temp: float
     sunlightTime: float
@@ -31,6 +36,11 @@ model = nn.Sequential(
 model.load_state_dict(torch.load('./model/model_weights.pth'))
 
 
+# Load The Scaler_x and Scaler_y
+scaler_x = joblib.load("./model/scaler_x.pkl")
+scaler_y = joblib.load("./model/scaler_y.pkl")
+
+
 
 @app.get("/hello-world")
 async def helloWorld():
@@ -39,22 +49,38 @@ async def helloWorld():
 
 @app.post("/get-prediction")
 async def getPrediction(item: Item):
-    # Get Rows as Float
-    ghi = item.ghi
-    humidity = item.humidity
-    temp = item.temp
-    sunlightTime = item.sunlightTime
-    dayLength = item.dayLength
-    SunlightTime_daylength = item.SunlightTime_daylength
+    rows = pd.DataFrame(
+        [[item.ghi, item.temp, item.humidity, item.is_sun, item.sunlightTime, item.dayLength, item.SunlightTime_daylength]],
+        columns=[
+            "GHI",
+            "temp",
+            "humidity",
+            "isSun",
+            "sunlightTime",
+            "dayLength",
+            "SunlightTime/daylength",
+        ],
+    )
 
-    # Apply Transformation
-    
-    
-    # Use Model to Predict
-    
-    # Send Prediction
-    
-    return {"item": item}
+    # Transformation
+    rows["GHI"] = np.log1p(rows["GHI"])
+    rows["temp"] = rows["temp"]
+    rows["humidity"] = np.sqrt(rows["humidity"])
+    rows["isSun"] = rows["isSun"]
+    rows["sunlightTime"] = np.log1p(rows["sunlightTime"])
+    rows["dayLength"] = np.sqrt(rows["dayLength"])
+    rows["SunlightTime/daylength"] = np.sqrt(rows["SunlightTime/daylength"])
+
+    # Scale the Values
+    rows_scalled = scaler_x.transform(rows)
+
+    # Convert Rows Into Tensor
+    rows_tensor = torch.tensor(rows_scalled, dtype=torch.float32)
+
+    # Prediction
+    pred = model(rows_tensor)
+
+    return {"prediction": pred}
 
 
 

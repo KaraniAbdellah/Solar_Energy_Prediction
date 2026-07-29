@@ -6,7 +6,11 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi[standard]>=0.140.0",
+    "joblib>=1.5.3",
+    "numpy>=2.4.4",
+    "pandas>=3.0.5",
     "pydantic>=2.13.4",
+    "scikit-learn>=1.9.0",
     "torch>=2.13.0",
 ]
 

@@ -2,3 +2,6 @@ fastapi
 pydantic
 torch # uv add torch --index https://download.pytorch.org/whl/cpu
 numpy
+joblib
+pandas
+sklearn
