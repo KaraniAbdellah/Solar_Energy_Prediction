@@ -1,7 +1,8 @@
-fastapi
+fastapi["standard"]
 pydantic
-torch # uv add torch --index https://download.pytorch.org/whl/cpu
+torch --index https://download.pytorch.org/whl/cpu # uv add torch --index https://download.pytorch.org/whl/cpu
 numpy
 joblib
 pandas
-sklearn
+scikit-learn
+

@@ -76,11 +76,13 @@ async def getPrediction(item: Item):
 
     # Convert Rows Into Tensor
     rows_tensor = torch.tensor(rows_scalled, dtype=torch.float32)
+    print(rows_tensor)
 
     # Prediction
     pred = model(rows_tensor)
+    print(pred)
 
-    return {"prediction": pred}
+    return {"Energy": pred.item()}
 
 
 
