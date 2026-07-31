@@ -1,8 +1,6 @@
 # Run backend with this: uv run fastapi dev
 from fastapi import FastAPI 
 from pydantic import BaseModel
-import torch.nn as nn
-import torch
 import numpy as np
 import joblib
 import pandas as pd
@@ -24,21 +22,10 @@ class Item(BaseModel):
     SunlightTime_daylength: float
 
 
-# Load The Model
-model = nn.Sequential(
-    nn.Linear(7, 12), # input layer with 7 neuron + hidden layer with 12 layer
-    nn.ReLU(),
-    nn.Linear(12, 7), # second hidden layer with 7 neuron
-    nn.ReLU(),
-    nn.Linear(7, 1), # last layer with 1 neuron - Ouput layer
-    # nn.Sigmoid() # We already scale the data
-)
-model.load_state_dict(torch.load('./model/model_weights.pth'))
-
-
 # Load The Scaler_x and Scaler_y
 scaler_x = joblib.load("./model/scaler_x.pkl")
 scaler_y = joblib.load("./model/scaler_y.pkl")
+model = joblib.load("./model/model.pkl")
 
 
 
@@ -74,15 +61,10 @@ async def getPrediction(item: Item):
     # Scale the Values
     rows_scalled = scaler_x.transform(rows)
 
-    # Convert Rows Into Tensor
-    rows_tensor = torch.tensor(rows_scalled, dtype=torch.float32)
-    print(rows_tensor)
-
     # Prediction
-    pred = model(rows_tensor)
-    print(pred)
+    pred = model.predict(rows_scalled)
 
-    return {"Energy": pred.item()}
+    return {"Energy": pred[0]}
 
 
 

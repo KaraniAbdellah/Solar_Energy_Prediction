@@ -1,16 +1,16 @@
 FROM python:3.12-slim
 
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-
 WORKDIR /app/
 
-COPY ./model main.py requirements.txt /app/
-COPY pyproject.toml uv.lock ./
+COPY requirements.txt ./
 
+# RUN uv sync --locked - this command creates .venv
+RUN pip install -r requirements.txt
 
-RUN uv add -r requirements.txt
+# Copy Other Files
+COPY . .
 
+# Container will runing in 8000 port
+EXPOSE 8000
 
-CMD ["uv", "fastapi", "run", "dev"]
-
-
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
