@@ -1,6 +1,0 @@
-// Revise Model --> Fix Prediction
-
-// Make Docker Container
-// Deploy The Model On Azure Alone
-
-// Build An ML Dashbaord

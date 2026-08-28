@@ -6,7 +6,6 @@ import joblib
 import pandas as pd
 
 
-
 # create app
 app = FastAPI()
 
