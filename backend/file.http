@@ -1,5 +1,5 @@
-POST http://127.0.0.1:8080/get-prediction HTTP/1.1
-Host: 127.0.0.1:8080
+POST https://solar-energy-74501815526.europe-central2.run.app/get-prediction HTTP/1.1
+Host: 127.0.0.1:8000
 Content-Type: application/json
 
 {
@@ -11,4 +11,3 @@ Content-Type: application/json
   "dayLength": 12.8,
   "SunlightTime_daylength": 0.8203
 }
-

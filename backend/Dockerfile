@@ -11,6 +11,9 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Container will runing in 8000 port
-EXPOSE 8000
+EXPOSE 8080
 
-CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=8000"]
+
+
+# My Docker Container Listen to 0.0.0.0 = any. not just 127.0.0.1
+CMD ["uvicorn", "main:app", "--host=0.0.0.0", "--port=8080"]
