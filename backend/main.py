@@ -4,11 +4,24 @@ from pydantic import BaseModel
 import numpy as np
 import joblib
 import pandas as pd
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # create app
 app = FastAPI()
 
+
+origins = [
+    "http://127.0.0.1:5500"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # create baseModel
 class Item(BaseModel):
