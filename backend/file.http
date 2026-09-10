@@ -1,5 +1,4 @@
 POST https://solar-energy-74501815526.europe-central2.run.app/get-prediction HTTP/1.1
-Host: 127.0.0.1:8000
 Content-Type: application/json
 
 {
