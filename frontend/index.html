@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Energy Predictor</title>
+    <!-- Environment Config -->
+    <script src="env.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        .loading-spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .slider-thumb::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        .slider-thumb::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b, #ea580c);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen antialiased">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20">
+                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                        Solar Energy <span class="bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">Predictor</span>
+                    </h1>
+                    <p class="text-sm text-slate-500">AI-powered renewable energy generation forecasting</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="btnExportPDF" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-rose-50 border border-slate-200 text-rose-600 text-xs font-semibold rounded-lg shadow-sm transition">
+                    PDF
+                </button>
+                <button id="btnExportCSV" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-emerald-50 border border-slate-200 text-emerald-600 text-xs font-semibold rounded-lg shadow-sm transition">
+                    CSV
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="bg-white border border-slate-200 rounded-xl p-1.5 shadow-sm mb-6 flex overflow-x-auto gap-1">
+            <a href="index.html" class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm transition bg-amber-500 text-white shadow-sm">
+                Predictor
+            </a>
+            <a href="dataset.html" class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                Dataset
+            </a>
+            <a href="model-documentation.html" class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                Model Documentation
+            </a>
+            <a href="about.html" class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                About
+            </a>
+        </nav>
+
+        <!-- Main Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="reportSection">
+            <!-- Left: Inputs -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                        Input Parameters
+                    </h2>
+
+                    <!-- Quick Presets -->
+                    <div class="mb-5">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 block">Quick Presets</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="applyPreset('sunny')" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 rounded-lg text-xs font-semibold transition text-left">☀️ Sunny</button>
+                            <button onclick="applyPreset('cloudy')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">☁️ Cloudy</button>
+                            <button onclick="applyPreset('evening')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">🌅 Evening</button>
+                            <button onclick="applyPreset('night')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">🌙 Night</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-semibold text-slate-600">GHI (W/m²)</label>
+                                <span class="text-amber-600 font-bold text-sm" id="ghiValue">650.5</span>
+                            </div>
+                            <input type="range" id="ghi" min="0" max="1200" step="0.5" value="650.5" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-semibold text-slate-600">Temperature (°C)</label>
+                                <span class="text-amber-600 font-bold text-sm" id="tempValue">28.7</span>
+                            </div>
+                            <input type="range" id="temp" min="-10" max="50" step="0.1" value="28.7" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-semibold text-slate-600">Humidity (%)</label>
+                                <span class="text-amber-600 font-bold text-sm" id="humidityValue">45.2</span>
+                            </div>
+                            <input type="range" id="humidity" min="0" max="100" step="0.1" value="45.2" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-semibold text-slate-600 mb-1.5 block">is_sun</label>
+                            <div class="flex gap-2">
+                                <button type="button" id="btnDay" class="flex-1 py-2 px-3 bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-sm">1 (Day)</button>
+                                <button type="button" id="btnNight" class="flex-1 py-2 px-3 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold">0 (Night)</button>
+                            </div>
+                            <input type="hidden" id="is_sun" value="1">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-semibold text-slate-600">Sunlight Time (h)</label>
+                                <span class="text-amber-600 font-bold text-sm" id="sunlightTimeValue">10.5</span>
+                            </div>
+                            <input type="range" id="sunlightTime" min="0" max="24" step="0.1" value="10.5" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-semibold text-slate-600">Day Length (h)</label>
+                                <span class="text-amber-600 font-bold text-sm" id="dayLengthValue">12.8</span>
+                            </div>
+                            <input type="range" id="dayLength" min="0" max="24" step="0.1" value="12.8" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="text-xs font-semibold text-slate-600">SunlightTime_daylength</label>
+                                <span class="text-amber-600 font-bold text-sm" id="ratioValue">0.8203</span>
+                            </div>
+                            <input type="range" id="SunlightTime_daylength" min="0" max="1" step="0.0001" value="0.8203" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                        </div>
+                    </div>
+
+                    <button id="btnPredict" class="w-full mt-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-2 active:scale-95">
+                        <span id="btnPredictText">Run Prediction</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Result Hero Card -->
+                <div class="bg-gradient-to-br from-amber-50 via-white to-orange-50 rounded-2xl border border-amber-200/80 p-6 sm:p-8 shadow-sm">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <span class="inline-block px-1 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold mb-2">Estimation</span>
+                            <div class="flex items-baseline gap-2">
+                                <span class="text-5xl sm:text-6xl font-black text-slate-900 tracking-tight hidden" id="resultValue"></span>
+                                <p class="text-2xl font-bold text-amber-600" id="rawEnergyText">-- WH</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="statusIndicator" class="hidden text-xs text-emerald-700 font-medium flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    </div>
+                </div>
+
+                <!-- Prediction History Table -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-slate-900">Recent Predictions</h3>
+                        <button id="btnClearHistory" class="text-xs text-rose-600 hover:underline font-semibold">Clear</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-slate-200 text-slate-500 text-xs uppercase font-semibold">
+                                    <th class="text-left py-2 px-3">Time</th>
+                                    <th class="text-right py-2 px-3">Clamped (Wh)</th>
+                                    <th class="text-right py-2 px-3">Raw Output</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyBody" class="divide-y divide-slate-100 font-mono text-xs">
+                                <tr>
+                                    <td colspan="3" class="text-center py-4 text-slate-400 font-sans">No predictions logged yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modular Script -->
+    <script type="module">
+        import { predictSolarEnergy, HistoryService, calculateAttributions, ExportService } from './main.js';
+
+        const inputs = ['ghi', 'temp', 'humidity', 'sunlightTime', 'dayLength', 'SunlightTime_daylength'];
+        
+        inputs.forEach(id => {
+            const el = document.getElementById(id);
+            el.addEventListener('input', () => {
+                const val = parseFloat(el.value);
+                const disp = document.getElementById(id + 'Value');
+                if (disp) {
+                    disp.textContent = ['ghi', 'temp', 'humidity'].includes(id) 
+                        ? val.toFixed(1) 
+                        : (id === 'SunlightTime_daylength' ? val.toFixed(4) : val.toFixed(1));
+                }
+
+                if (id === 'sunlightTime' || id === 'dayLength') {
+                    const st = parseFloat(document.getElementById('sunlightTime').value);
+                    const dl = parseFloat(document.getElementById('dayLength').value);
+                    const r = dl > 0 ? (st / dl) : 0;
+                    document.getElementById('SunlightTime_daylength').value = r;
+                    document.getElementById('ratioValue').textContent = r.toFixed(4);
+                }
+            });
+        });
+
+        // Sun toggles (sets "is_sun" = 1 or 0)
+        const btnDay = document.getElementById('btnDay');
+        const btnNight = document.getElementById('btnNight');
+        const isSunInput = document.getElementById('is_sun');
+
+        btnDay.addEventListener('click', () => {
+            isSunInput.value = '1';
+            btnDay.className = 'flex-1 py-2 px-3 bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-sm';
+            btnNight.className = 'flex-1 py-2 px-3 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold';
+        });
+
+        btnNight.addEventListener('click', () => {
+            isSunInput.value = '0';
+            btnNight.className = 'flex-1 py-2 px-3 bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-sm';
+            btnDay.className = 'flex-1 py-2 px-3 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold';
+        });
+
+        window.applyPreset = function(preset) {
+            const presets = {
+                sunny: { ghi: 1000, temp: 35.0, humidity: 30.0, is_sun: 1, sunlightTime: 14.0, dayLength: 14.0, SunlightTime_daylength: 1.0 },
+                cloudy: { ghi: 300, temp: 22.0, humidity: 75.0, is_sun: 1, sunlightTime: 10.0, dayLength: 12.0, SunlightTime_daylength: 0.8333 },
+                evening: { ghi: 200, temp: 28.0, humidity: 50.0, is_sun: 0, sunlightTime: 2.0, dayLength: 12.0, SunlightTime_daylength: 0.1667 },
+                night: { ghi: 0, temp: 20.0, humidity: 60.0, is_sun: 0, sunlightTime: 0.0, dayLength: 12.0, SunlightTime_daylength: 0.0 }
+            };
+
+            const p = presets[preset];
+
+            Object.keys(p).forEach(k => {
+                const el = document.getElementById(k);
+                if (el) {
+                    el.value = p[k];
+                    el.dispatchEvent(new Event('input'));
+                }
+            });
+
+            if (p.is_sun === 1) btnDay.click(); else btnNight.click();
+        };
+
+        function renderHistory() {
+            const history = HistoryService.getAll();
+            const tbody = document.getElementById('historyBody');
+
+            if (!history.length) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center py-4 text-slate-400 font-sans">No predictions logged yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = history.map(h => `
+                <tr class="hover:bg-slate-50">
+                    <td class="py-2.5 px-3 text-slate-600">${h.formattedTime}</td>
+                    <td class="py-2.5 px-3 text-right text-amber-700 font-bold">${h.energy} Wh</td>
+                    <td class="py-2.5 px-3 text-right text-slate-400">${h.rawEnergy}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Run prediction
+        document.getElementById('btnPredict').addEventListener('click', async () => {
+            const btn = document.getElementById('btnPredict');
+            const btnText = document.getElementById('btnPredictText');
+
+            btn.disabled = true;
+            btnText.textContent = 'Calling API...';
+
+            const payload = {
+                ghi: parseFloat(document.getElementById('ghi').value),
+                humidity: parseFloat(document.getElementById('humidity').value),
+                temp: parseFloat(document.getElementById('temp').value),
+                is_sun: parseInt(document.getElementById('is_sun').value),
+                sunlightTime: parseFloat(document.getElementById('sunlightTime').value),
+                dayLength: parseFloat(document.getElementById('dayLength').value),
+                SunlightTime_daylength: parseFloat(document.getElementById('SunlightTime_daylength').value)
+            };
+
+            try {
+                const result = await predictSolarEnergy(payload);
+                const energy = result.energy;
+                const variance = energy * 0.15;
+
+                document.getElementById('resultValue').classList.remove('hidden');
+                document.getElementById('rawEnergyText').textContent = `Raw Model Output: ${result.raw.toFixed(6)}`;
+
+                const rangeMin = document.getElementById('rangeMin');
+                const rangeMax = document.getElementById('rangeMax');
+
+                if (rangeMin) rangeMin.textContent = `${Math.max(0, energy - variance).toFixed(1)} Wh`;
+                if (rangeMax) rangeMax.textContent = `${(energy + variance).toFixed(1)} Wh`;
+
+                document.getElementById('statusIndicator').classList.remove('hidden');
+
+                const attributions = calculateAttributions(payload);
+                const factorsContainer = document.getElementById('factorsContainer');
+
+                if (factorsContainer) factorsContainer.innerHTML = attributions.map(a => `
+                    <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
+                        <span class="text-xs font-medium text-slate-700">${a.name}</span>
+                        <span class="${a.isPositive ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200'} border text-xs px-2 py-0.5 rounded-md font-bold">
+                            ${a.isPositive ? '+' : ''}${a.impact}%
+                        </span>
+                    </div>
+                `).join('');
+
+                HistoryService.save({ 
+                    energy: energy.toFixed(2), 
+                    rawEnergy: result.raw.toFixed(4), 
+                    params: payload 
+                });
+
+                renderHistory();
+            } catch (err) {
+                alert('API Error: ' + err.message);
+            } finally {
+                btn.disabled = false;
+                btnText.textContent = 'Run Prediction';
+            }
+        });
+
+        document.getElementById('btnClearHistory').addEventListener('click', () => {
+            HistoryService.clear();
+            renderHistory();
+        });
+
+        document.getElementById('btnExportCSV').addEventListener('click', () => {
+            ExportService.toCSV(HistoryService.getAll());
+        });
+
+        document.getElementById('btnExportPDF').addEventListener('click', () => {
+            ExportService.toPDF('reportSection');
+        });
+
+        renderHistory();
+    </script>
+</body>
+</html>
