@@ -1,18 +1,33 @@
+# This workflow builds and pushes a Docker container to Google Artifact Registry
+# and deploys it to Cloud Run when a commit is pushed to the "main" branch.
+
 name: 'Build and Deploy to Cloud Run'
 
 on:
   push:
     branches:
-      - '"main"'
+      - 'main'
+  workflow_dispatch:
 
 env:
-  PROJECT_ID: 'solar-energy-509913' 
-  REGION: 'europe-central2' 
-  SERVICE: 'solar-service-account@solar-energy-509913.iam.gserviceaccount.com'
-  WORKLOAD_IDENTITY_PROVIDER: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-  REPOSITORY: 'cloud-run-source-deploy'
-  IMAGE_NAME: 'solar'
+  PROJECT_ID: 'optimic'
+  REGION: 'europe-central2'
 
+  # Cloud Run service name
+  SERVICE: 'optimic-backend'
+  SERVICE_ACCOUNT_EMAIL: '${{secrets.S_ACCOUNT_EMAIL}}'
+
+  # Artifact Registry repository
+  REPOSITORY: 'cloud-run-source-deploy'
+
+  # Docker image name
+  IMAGE_NAME: 'optimic-backend'
+
+  # GitHub Secret containing your Workload Identity Provider
+  WORKLOAD_IDENTITY_PROVIDER: '${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}'
+
+
+  
 jobs:
   deploy:
     runs-on: 'ubuntu-latest'
@@ -22,45 +37,61 @@ jobs:
       id-token: 'write'
 
     steps:
-      - name: 'Checkout'
-        uses: 'actions/checkout@v4'
 
+      # 1. Get the repository code
+      - name: 'Checkout'
+        uses: 'actions/checkout@v6'
+
+      # 2. Authenticate GitHub Actions with Google Cloud
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v3'
         with:
+          service_account: ${{env.SERVICE_ACCOUNT_EMAIL}}
+          project_id: '${{ env.PROJECT_ID }}'
           workload_identity_provider: '${{ env.WORKLOAD_IDENTITY_PROVIDER }}'
-          service_account: '${{env.SERVICE}}'
-          project_id: '${{env.PROJECT_ID}}'
 
-      # BEGIN - Docker auth and build
-      #
-      # If you already have a container image, you can omit these steps.
+      # 3. Authenticate Docker with Artifact Registry
       - name: 'Docker Auth'
-        uses: 'docker/login-action@v4' # 
+        uses: 'docker/login-action@v4'
         with:
           username: 'oauth2accesstoken'
           password: '${{ steps.auth.outputs.auth_token }}'
           registry: '${{ env.REGION }}-docker.pkg.dev'
 
+      # 4. Build and push Docker image
       - name: 'Build and Push Container'
         run: |-
-          DOCKER_TAG="$${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          DOCKER_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           gcloud auth configure-docker ${{env.REGION}}-docker.pkg.dev
-          docker build --tag "${DOCKER_TAG}" .
+          docker build \
+            --tag "${DOCKER_TAG}" \
+            ./optimic/backend
+
           docker push "${DOCKER_TAG}"
+
+      # 5. Deploy the image to Cloud Run
       - name: 'Deploy to Cloud Run'
-
-        # END - Docker auth and build
-
-        uses: 'google-github-actions/deploy-cloudrun@v3' # google-github-actions/deploy-cloudrun@v2
+        id: 'deploy'
+        uses: 'google-github-actions/deploy-cloudrun@v3'
         with:
           service: '${{ env.SERVICE }}'
           region: '${{ env.REGION }}'
-          # NOTE: If using a pre-built image, update the image name below:
-          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{env.IMAGE_NAME}}:${{ github.sha }}'
-      # If required, use the Cloud Run URL output in later steps
-      - name: 'Show output'
-        run: |2-
+          image: '${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}'
+          env_vars: |
+            ALGORITHM=${{ secrets.ALGORITHM }}
+            GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+            GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}
+            MODE_TYPE=${{ secrets.MODE_TYPE }}
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+            QDRANT_CLOUD_API_KEY=${{ secrets.QDRANT_CLOUD_API_KEY }}
+            QDRANT_CLOUD_ENDPOINT=${{ secrets.QDRANT_CLOUD_ENDPOINT }}
+            SECRET_KEY=${{ secrets.SECRET_KEY }}
+            TAVILY_API_KEY=${{ secrets.TAVILY_API_KEY }}
+            TOKEN_EXPIRE_DAYS=${{ secrets.TOKEN_EXPIRE_DAYS }}
 
+      # 6. Display Cloud Run URL
+      - name: 'Show output'
+        run: |-
           echo "Cloud Run URL: ${{ steps.deploy.outputs.url }}"
