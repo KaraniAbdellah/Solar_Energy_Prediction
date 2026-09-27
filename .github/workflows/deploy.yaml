@@ -1,8 +1,0 @@
-name: "Atomate Solar Energy Deployment"
-
-jobs:
-  build:
-    name: Build Image Container
-
-  deploy:
-    name: Deplot Container Image

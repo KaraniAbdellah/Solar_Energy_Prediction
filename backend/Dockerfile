@@ -5,7 +5,7 @@ WORKDIR /app/
 COPY requirements.txt ./
 
 # RUN uv sync --locked - this command creates .venv
-RUN pip install -r requirements.txt
+RUN pip install --no-cache dir -r requirements.txt
 
 # Copy Other Files
 COPY . .

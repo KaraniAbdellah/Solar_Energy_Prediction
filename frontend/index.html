@@ -8,6 +8,7 @@
     <script src="env.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
         .loading-spinner { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -33,7 +34,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen antialiased">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         <!-- Header -->
         <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div class="flex items-center gap-3">
@@ -212,15 +213,15 @@
         import { predictSolarEnergy, HistoryService, calculateAttributions, ExportService } from './main.js';
 
         const inputs = ['ghi', 'temp', 'humidity', 'sunlightTime', 'dayLength', 'SunlightTime_daylength'];
-        
+
         inputs.forEach(id => {
             const el = document.getElementById(id);
             el.addEventListener('input', () => {
                 const val = parseFloat(el.value);
                 const disp = document.getElementById(id + 'Value');
                 if (disp) {
-                    disp.textContent = ['ghi', 'temp', 'humidity'].includes(id) 
-                        ? val.toFixed(1) 
+                    disp.textContent = ['ghi', 'temp', 'humidity'].includes(id)
+                        ? val.toFixed(1)
                         : (id === 'SunlightTime_daylength' ? val.toFixed(4) : val.toFixed(1));
                 }
 
@@ -336,10 +337,10 @@
                     </div>
                 `).join('');
 
-                HistoryService.save({ 
-                    energy: energy.toFixed(2), 
-                    rawEnergy: result.raw.toFixed(4), 
-                    params: payload 
+                HistoryService.save({
+                    energy: energy.toFixed(2),
+                    rawEnergy: result.raw.toFixed(4),
+                    params: payload
                 });
 
                 renderHistory();
