@@ -11,8 +11,8 @@ env:
   REGION: 'europe-central2' 
   SERVICE: 'solar-service-account@solar-energy-509913.iam.gserviceaccount.com'
   WORKLOAD_IDENTITY_PROVIDER: 'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-  REPOSITORY: 'cloud-run-source-deploy'
-  IMAGE_NAME: 'solar'
+  REPOSITORY: 'solar-repo'
+  IMAGE_NAME: 'solar-image'
 
 jobs:
   deploy:
