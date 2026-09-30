@@ -10,7 +10,6 @@ Solar Energy Predictor is a web application that estimates the solar energy prod
 
 - [Overview](#overview)
 - [Features](#features)
-- [Dataset](#dataset)
 - [Model](#model)
 - [Workflow](#workflow)
 - [API Reference](#api-reference)
@@ -134,7 +133,7 @@ Predictions are converted back to Watt-hours by reversing the scaling and applyi
 3. **Transformation & Scaling** – Applies log/square-root transforms to reduce skew, splits train/test sets, and normalizes with `MinMaxScaler`.
 4. **Training & Prediction** – Trains the PyTorch network (MSE + Adam), then reverses scaling and the log transform (`expm1`).
 
-💻 More details on Kaggle: _add your notebook link here_
+💻 More details on Kaggle: <a href="https://www.kaggle.com/code/abdellahkarani/explore-renewable-dataset/notebook">Kaggle</a>
 
 ---
 
@@ -242,4 +241,4 @@ cd ../frontend # run index.html in Live Server
 
 ## Author
 
-This project is open source, created by **Abdellah Karani**.
+ by **<a href="https://www.linkedin.com/in/abdellah-karani-965928294/">Abdellah Karani</a>.**
