@@ -12,7 +12,8 @@ app = FastAPI()
 
 
 origins = [
-    "http://127.0.0.1:5500"
+    "http://127.0.0.1:5500",
+    "https://karaniabdellah.github.io/Solar_Energy_Prediction"
 ]
 
 app.add_middleware(
