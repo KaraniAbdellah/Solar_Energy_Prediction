@@ -43,10 +43,12 @@ scaler_x = joblib.load("./model/scaler_x.pkl")
 scaler_y = joblib.load("./model/scaler_y.pkl")
 model = joblib.load("./model/model.pkl")
 
-
+@app.get("/")
+def read_root():
+    return {"message": "Hello, World!"}
 
 @app.get("/hello-world")
-async def helloWorld():
+def helloWorld():
     return {"greeting": "hello world"}
 
 
