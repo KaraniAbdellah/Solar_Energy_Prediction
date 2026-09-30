@@ -1,5 +1,5 @@
 # Run backend with this: uv run fastapi dev
-from fastapi import FastAPI 
+from fastapi import FastAPI
 from pydantic import BaseModel
 import numpy as np
 import joblib
@@ -81,6 +81,3 @@ async def getPrediction(item: Item):
     pred = model.predict(rows_scalled)
 
     return {"Energy": pred[0]}
-
-
-
