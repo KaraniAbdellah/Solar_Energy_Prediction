@@ -44,7 +44,7 @@ export async function predictSolarEnergy(payload) {
 
     // Extract exact "Energy" attribute from API response
     const rawValue = typeof data.Energy === 'number' ? data.Energy : 0;
-    
+
     return {
         raw: rawValue,
         energy: Math.max(0, rawValue) // Solar output cannot be physically negative
@@ -118,7 +118,7 @@ export const ExportService = {
             r.params?.dayLength ?? '',
             r.params?.SunlightTime_daylength ?? ''
         ]);
-        
+
         const blob = new Blob([[headers.join(','), ...rows.map(e => e.join(','))].join('\n')], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');

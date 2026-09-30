@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,32 @@
     <script src="env.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     <style>
-        .loading-spinner { animation: spin 1s linear infinite; }
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        * {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
         .slider-thumb::-webkit-slider-thumb {
             -webkit-appearance: none;
             width: 20px;
@@ -21,6 +44,7 @@
             cursor: pointer;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
         }
+
         .slider-thumb::-moz-range-thumb {
             width: 20px;
             height: 20px;
@@ -32,29 +56,36 @@
         }
     </style>
 </head>
+
 <body class="bg-slate-100 text-slate-800 min-h-screen antialiased">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <!-- Header -->
         <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div class="flex items-center gap-3">
-                <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20">
+                <div
+                    class="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md shadow-amber-500/20">
                     <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                        </path>
                     </svg>
                 </div>
                 <div>
                     <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                        Solar Energy <span class="bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">Predictor</span>
+                        Solar Energy <span
+                            class="bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">Predictor</span>
                     </h1>
                     <p class="text-sm text-slate-500">AI-powered renewable energy generation forecasting</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
-                <button id="btnExportPDF" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-rose-50 border border-slate-200 text-rose-600 text-xs font-semibold rounded-lg shadow-sm transition">
+                <button id="btnExportPDF"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-rose-50 border border-slate-200 text-rose-600 text-xs font-semibold rounded-lg shadow-sm transition">
                     PDF
                 </button>
-                <button id="btnExportCSV" class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-emerald-50 border border-slate-200 text-emerald-600 text-xs font-semibold rounded-lg shadow-sm transition">
+                <button id="btnExportCSV"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-emerald-50 border border-slate-200 text-emerald-600 text-xs font-semibold rounded-lg shadow-sm transition">
                     CSV
                 </button>
             </div>
@@ -62,16 +93,20 @@
 
         <!-- Navigation Tabs -->
         <nav class="bg-white border border-slate-200 rounded-xl p-1.5 shadow-sm mb-6 flex overflow-x-auto gap-1">
-            <a href="index.html" class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm transition bg-amber-500 text-white shadow-sm">
+            <a href="index.html"
+                class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm transition bg-amber-500 text-white shadow-sm">
                 Predictor
             </a>
-            <a href="dataset.html" class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+            <a href="dataset.html"
+                class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                 Dataset
             </a>
-            <a href="model-documentation.html" class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+            <a href="model-documentation.html"
+                class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                 Model Documentation
             </a>
-            <a href="about.html" class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+            <a href="about.html"
+                class="flex-1 min-w-[130px] flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                 About
             </a>
         </nav>
@@ -88,12 +123,21 @@
 
                     <!-- Quick Presets -->
                     <div class="mb-5">
-                        <label class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 block">Quick Presets</label>
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 block">Quick
+                            Presets</label>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="applyPreset('sunny')" class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 rounded-lg text-xs font-semibold transition text-left">☀️ Sunny</button>
-                            <button onclick="applyPreset('cloudy')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">☁️ Cloudy</button>
-                            <button onclick="applyPreset('evening')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">🌅 Evening</button>
-                            <button onclick="applyPreset('night')" class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">🌙 Night</button>
+                            <button onclick="applyPreset('sunny')"
+                                class="px-3 py-2 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-800 rounded-lg text-xs font-semibold transition text-left">☀️
+                                Sunny</button>
+                            <button onclick="applyPreset('cloudy')"
+                                class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">☁️
+                                Cloudy</button>
+                            <button onclick="applyPreset('evening')"
+                                class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">🌅
+                                Evening</button>
+                            <button onclick="applyPreset('night')"
+                                class="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition text-left">🌙
+                                Night</button>
                         </div>
                     </div>
 
@@ -103,7 +147,8 @@
                                 <label class="text-xs font-semibold text-slate-600">GHI (W/m²)</label>
                                 <span class="text-amber-600 font-bold text-sm" id="ghiValue">650.5</span>
                             </div>
-                            <input type="range" id="ghi" min="0" max="1200" step="0.5" value="650.5" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="ghi" min="0" max="1200" step="0.5" value="650.5"
+                                class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
 
                         <div>
@@ -111,7 +156,8 @@
                                 <label class="text-xs font-semibold text-slate-600">Temperature (°C)</label>
                                 <span class="text-amber-600 font-bold text-sm" id="tempValue">28.7</span>
                             </div>
-                            <input type="range" id="temp" min="-10" max="50" step="0.1" value="28.7" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="temp" min="-10" max="50" step="0.1" value="28.7"
+                                class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
 
                         <div>
@@ -119,14 +165,19 @@
                                 <label class="text-xs font-semibold text-slate-600">Humidity (%)</label>
                                 <span class="text-amber-600 font-bold text-sm" id="humidityValue">45.2</span>
                             </div>
-                            <input type="range" id="humidity" min="0" max="100" step="0.1" value="45.2" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="humidity" min="0" max="100" step="0.1" value="45.2"
+                                class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
 
                         <div>
                             <label class="text-xs font-semibold text-slate-600 mb-1.5 block">is_sun</label>
                             <div class="flex gap-2">
-                                <button type="button" id="btnDay" class="flex-1 py-2 px-3 bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-sm">1 (Day)</button>
-                                <button type="button" id="btnNight" class="flex-1 py-2 px-3 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold">0 (Night)</button>
+                                <button type="button" id="btnDay"
+                                    class="flex-1 py-2 px-3 bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-sm">1
+                                    (Day)</button>
+                                <button type="button" id="btnNight"
+                                    class="flex-1 py-2 px-3 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold">0
+                                    (Night)</button>
                             </div>
                             <input type="hidden" id="is_sun" value="1">
                         </div>
@@ -136,7 +187,8 @@
                                 <label class="text-xs font-semibold text-slate-600">Sunlight Time (h)</label>
                                 <span class="text-amber-600 font-bold text-sm" id="sunlightTimeValue">10.5</span>
                             </div>
-                            <input type="range" id="sunlightTime" min="0" max="24" step="0.1" value="10.5" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="sunlightTime" min="0" max="24" step="0.1" value="10.5"
+                                class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
 
                         <div>
@@ -144,7 +196,8 @@
                                 <label class="text-xs font-semibold text-slate-600">Day Length (h)</label>
                                 <span class="text-amber-600 font-bold text-sm" id="dayLengthValue">12.8</span>
                             </div>
-                            <input type="range" id="dayLength" min="0" max="24" step="0.1" value="12.8" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="dayLength" min="0" max="24" step="0.1" value="12.8"
+                                class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
 
                         <div>
@@ -152,11 +205,13 @@
                                 <label class="text-xs font-semibold text-slate-600">SunlightTime_daylength</label>
                                 <span class="text-amber-600 font-bold text-sm" id="ratioValue">0.8203</span>
                             </div>
-                            <input type="range" id="SunlightTime_daylength" min="0" max="1" step="0.0001" value="0.8203" class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
+                            <input type="range" id="SunlightTime_daylength" min="0" max="1" step="0.0001" value="0.8203"
+                                class="slider-thumb w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer">
                         </div>
                     </div>
 
-                    <button id="btnPredict" class="w-full mt-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-2 active:scale-95">
+                    <button id="btnPredict"
+                        class="w-full mt-6 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-amber-500/20 transition flex items-center justify-center gap-2 active:scale-95">
                         <span id="btnPredictText">Run Prediction</span>
                     </button>
                 </div>
@@ -165,18 +220,22 @@
             <!-- Right Column -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Result Hero Card -->
-                <div class="bg-gradient-to-br from-amber-50 via-white to-orange-50 rounded-2xl border border-amber-200/80 p-6 sm:p-8 shadow-sm">
+                <div
+                    class="bg-gradient-to-br from-amber-50 via-white to-orange-50 rounded-2xl border border-amber-200/80 p-6 sm:p-8 shadow-sm">
                     <div class="flex items-start justify-between mb-4">
                         <div>
-                            <span class="inline-block px-1 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold mb-2">Estimation</span>
+                            <span
+                                class="inline-block px-1 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold mb-2">Estimation</span>
                             <div class="flex items-baseline gap-2">
-                                <span class="text-5xl sm:text-6xl font-black text-slate-900 tracking-tight hidden" id="resultValue"></span>
+                                <span class="text-5xl sm:text-6xl font-black text-slate-900 tracking-tight hidden"
+                                    id="resultValue"></span>
                                 <p class="text-2xl font-bold text-amber-600" id="rawEnergyText">-- WH</p>
                             </div>
                         </div>
                     </div>
 
-                    <div id="statusIndicator" class="hidden text-xs text-emerald-700 font-medium flex items-center gap-2">
+                    <div id="statusIndicator"
+                        class="hidden text-xs text-emerald-700 font-medium flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     </div>
                 </div>
@@ -185,7 +244,8 @@
                 <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
                     <div class="flex items-center justify-between mb-4">
                         <h3 class="text-base font-bold text-slate-900">Recent Predictions</h3>
-                        <button id="btnClearHistory" class="text-xs text-rose-600 hover:underline font-semibold">Clear</button>
+                        <button id="btnClearHistory"
+                            class="text-xs text-rose-600 hover:underline font-semibold">Clear</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
@@ -198,7 +258,8 @@
                             </thead>
                             <tbody id="historyBody" class="divide-y divide-slate-100 font-mono text-xs">
                                 <tr>
-                                    <td colspan="3" class="text-center py-4 text-slate-400 font-sans">No predictions logged yet</td>
+                                    <td colspan="3" class="text-center py-4 text-slate-400 font-sans">No predictions
+                                        logged yet</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -252,7 +313,7 @@
             btnDay.className = 'flex-1 py-2 px-3 bg-slate-100 text-slate-600 border border-slate-200 rounded-lg text-xs font-semibold';
         });
 
-        window.applyPreset = function(preset) {
+        window.applyPreset = function (preset) {
             const presets = {
                 sunny: { ghi: 1000, temp: 35.0, humidity: 30.0, is_sun: 1, sunlightTime: 14.0, dayLength: 14.0, SunlightTime_daylength: 1.0 },
                 cloudy: { ghi: 300, temp: 22.0, humidity: 75.0, is_sun: 1, sunlightTime: 10.0, dayLength: 12.0, SunlightTime_daylength: 0.8333 },
@@ -368,4 +429,5 @@
         renderHistory();
     </script>
 </body>
+
 </html>
