@@ -2,7 +2,7 @@
  * Application Configuration & Environment
  */
 export const ENV = {
-    API_URL: window.ENV?.API_URL || 'http://localhost:8000',
+    API_URL: "https://solar-service-account-116404981665.europe-central2.run.app",
     STORAGE_KEY: 'solar_prediction_history'
 };
 

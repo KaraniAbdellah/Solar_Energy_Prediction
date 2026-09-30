@@ -13,7 +13,9 @@ app = FastAPI()
 
 origins = [
     "http://127.0.0.1:5500",
+    "https://127.0.0.1:5500",
     "https://karaniabdellah.github.io",
+    "http://karaniabdellah.github.io",
 ]
 
 
